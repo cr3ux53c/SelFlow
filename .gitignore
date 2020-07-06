@@ -1,2 +1,3 @@
 # python cache
 *.pyc
+/images/test_images/*

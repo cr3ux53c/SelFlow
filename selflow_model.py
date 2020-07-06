@@ -6,6 +6,7 @@ import os
 import sys
 import time
 import cv2
+import imageio
 
 from six.moves import xrange
 from scipy import misc, io
@@ -113,8 +114,8 @@ class SelFlowModel(object):
             os.makedirs(save_dir)           
         for i in range(dataset.data_num):
             np_flow_fw, np_flow_bw, np_flow_fw_color, np_flow_bw_color = sess.run([flow_fw['full_res'], flow_bw['full_res'], flow_fw_color, flow_bw_color])
-            misc.imsave('%s/flow_fw_color_%s.png' % (save_dir, save_name_list[i]), np_flow_fw_color[0])
-            misc.imsave('%s/flow_bw_color_%s.png' % (save_dir, save_name_list[i]), np_flow_bw_color[0])
+            imageio.imwrite('%s/flow_fw_color_%s.png' % (save_dir, save_name_list[i]), np_flow_fw_color[0])
+            imageio.imwrite('%s/flow_bw_color_%s.png' % (save_dir, save_name_list[i]), np_flow_bw_color[0])
             write_flo('%s/flow_fw_%s.flo' % (save_dir, save_name_list[i]), np_flow_fw[0])
             write_flo('%s/flow_bw_%s.flo' % (save_dir, save_name_list[i]), np_flow_bw[0])
             print('Finish %d/%d' % (i+1, dataset.data_num))    

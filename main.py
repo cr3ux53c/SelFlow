@@ -14,6 +14,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 #os.environ['CUDA_VISIBLE_DEVICES']=str(np.argmax([int(x.split()[2]) for x in open('tmp','r').readlines()]))
 #os.system('rm tmp')
 
+os.chdir('sources/SelFlow')
 
 def main(_):
     config = config_dict('./config/config.ini')
@@ -55,6 +56,6 @@ def main(_):
                    is_normalize_img=dataset_config['is_normalize_img'])
     else:
         raise ValueError('Invalid mode. Mode should be one of {test}')
-
+    
 if __name__ == '__main__':
-    tf.app.run() 
+    tf.app.run()
