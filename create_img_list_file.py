@@ -23,6 +23,6 @@ for img in sorted(glob.glob(join(data_dir, '*.png'))):
     
     count += 1
 
-    f.write(preprevious_img + ' ' + previous_img + ' ' + os.path.basename(img) + ' {:03d}\n'.format(count))
+    f.write(preprevious_img + ' ' + previous_img + ' ' + os.path.basename(img) + ' {:04d}\n'.format(count))
     preprevious_img = previous_img
     previous_img = os.path.basename(img)
