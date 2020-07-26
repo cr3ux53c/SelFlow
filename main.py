@@ -14,7 +14,11 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 #os.environ['CUDA_VISIBLE_DEVICES']=str(np.argmax([int(x.split()[2]) for x in open('tmp','r').readlines()]))
 #os.system('rm tmp')
 
-os.chdir('sources/SelFlow')
+from tensorflow.compat.v1 import ConfigProto
+from tensorflow.compat.v1 import InteractiveSession
+config = ConfigProto()
+config.gpu_options.allow_growth = True
+session = InteractiveSession(config=config)
 
 def main(_):
     config = config_dict('./config/config.ini')
@@ -53,7 +57,8 @@ def main(_):
     if run_config['mode'] == 'test':
         model.test(restore_model=config['test']['restore_model'],
                    save_dir=config['test']['save_dir'],
-                   is_normalize_img=dataset_config['is_normalize_img'])
+                   is_normalize_img=dataset_config['is_normalize_img'],
+                   prefix='')#{:03d}'.format(14))
     else:
         raise ValueError('Invalid mode. Mode should be one of {test}')
     
