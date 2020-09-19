@@ -16,6 +16,7 @@ def download_dataset():
     os.makedirs('avenue', exist_ok=True)
     print('Extracting archive file...')
     os.system('tar -xvf avenue.tar -C avenue')
+    os.system('rm avenue.tar')
 
 
 def extract_video_frame():
