@@ -7,16 +7,19 @@ import os
 import cv2
 import glob
 pwd = os.getcwd()
+DATASET_NAME = 'avenue'
 
 
-def download_dataset():
+def download_dataset(delete_archive=False):
     os.chdir(os.path.join(pwd, 'datasets'))
-    os.system(
-        'wget -O avenue.tar https://cloud.amilab.dev/s/tYgdTtQNjPP8irn/download')
+    if not os.path.isfile('avenue.tar'):
+        os.system(
+            'wget -O avenue.tar https://cloud.amilab.dev/s/tYgdTtQNjPP8irn/download')
     os.makedirs('avenue', exist_ok=True)
     print('Extracting archive file...')
     os.system('tar -xvf avenue.tar -C avenue')
-    os.system('rm avenue.tar')
+    if delete_archive:
+        os.system('rm avenue.tar')
 
 
 def extract_video_frame():
@@ -60,7 +63,56 @@ def save_gt_to_img():
                 os.path.basename(mat_path))[0], '{:04d}.png'.format(i)), res)
 
 
+def create_imgfile_list():
+    os.chdir(os.path.join(pwd, 'datasets', 'avenue'))
+    result_dir = '../../img_list'
+
+    for sub_dir in ['testing_videos', 'training_videos']:
+        list_file = open(os.path.join(result_dir, 'avenue_' + sub_dir + '.txt'), 'w')
+
+        preprevious_img = None
+        previous_img = None
+        count = 0
+        count += 1  # forward_of => 002.png with 003.png
+        for img in sorted(sorted(glob.glob(os.path.join(sub_dir + '_All', '*.png')))):
+            print('Listing {}...'.format(img))
+            if preprevious_img is None:
+                preprevious_img = os.path.basename(img)
+                continue
+
+            if previous_img is None:
+                previous_img = os.path.basename(img)
+                continue
+
+            count += 1
+
+            list_file.write(preprevious_img + ' ' + previous_img +
+                            ' ' + os.path.basename(img) + ' {:04d}\n'.format(count))
+            preprevious_img = previous_img
+            previous_img = os.path.basename(img)
+
+
+def copy_all_seqeunce_to_one_folder():
+    from shutil import copyfile
+
+    os.chdir(os.path.join(pwd, 'datasets', DATASET_NAME))
+
+    for root_dir in ['testing_videos', 'training_videos']:
+        for index in range(1, 22):
+            index = str(index).zfill(2)
+            os.makedirs(os.path.join(root_dir + '_All'), exist_ok=True)
+
+            frame_list = sorted(glob.glob(os.path.join(root_dir, index, '*.png')))
+            for frame_path in frame_list:
+                print(
+                    'Save copies of video frames #{}...'.format(index))
+                copyfile(frame_path, os.path.join(root_dir + '_All', index + '_' + os.path.basename(frame_path)))
+
+
+
 if __name__ == "__main__":
-    download_dataset()
-    extract_video_frame()
-    save_gt_to_img()
+    # download_dataset()
+    # extract_video_frame()
+    # copy_all_seqeunce_to_one_folder()
+    # save_gt_to_img()
+    create_imgfile_list()
